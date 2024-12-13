@@ -1,39 +1,51 @@
-function sumPairedElementsDistance(leftList: number[], rightList: number[]) {
+function firstPart(leftList: number[], rightList: number[]) {
   if (leftList.length !== rightList.length) {
-    throw new Error('Impossible to pair up');
+    throw new Error("Impossible to pair up");
   }
 
   let totalDistance = 0;
 
-  const ll = leftList.sort((a, b) => a - b);
-  const rl = rightList.sort((a, b) => a - b);
+  leftList.sort((a, b) => a - b);
+  rightList.sort((a, b) => a - b);
 
-  ll.shift(); // POR QUÊ?!
+  leftList.shift(); // POR QUÊ?!
 
-  for (let i = 0; i < ll.length - 1; i++) {
-    totalDistance += Math.abs(ll[i] - rl[i]);
+  for (let i = 0; i < leftList.length - 1; i++) {
+    totalDistance += Math.abs(leftList[i] - rightList[i]);
   }
 
   return totalDistance;
 }
 
-async function getLists(inputPath: string) {
-  const file = await Bun.file(inputPath).text();
+function secondPart(leftList: number[], rightList: number[]) {
+  let similarityScore = 0;
 
-  const leftList: number[] = [];
-  const rightList: number[] = [];
-
-  for (const line of file.split('\n')) {
-    const [leftNum, rightNum] = line.split('   ');
-    leftList.push(Number(leftNum));
-    rightList.push(Number(rightNum));
+  for (const lNumber of leftList) {
+    const frequency = rightList.filter((rNumber) => rNumber === lNumber).length;
+    similarityScore += lNumber * frequency;
   }
 
-  return { leftList, rightList };
+  return similarityScore;
 }
 
-const { leftList, rightList } = await getLists('inputs/day-1.txt');
+async function getLines(path: string) {
+  const file = await Bun.file(path).text();
 
-// console.log(leftList, rightList);
+  return file.split("\n");
+}
 
-console.log(sumPairedElementsDistance(leftList, rightList))
+const lines = await getLines("inputs/day-1.txt");
+
+const leftList: number[] = [];
+const rightList: number[] = [];
+
+for (const line of lines) {
+  const [leftNum, rightNum] = line.split("   ");
+  leftList.push(Number(leftNum));
+  rightList.push(Number(rightNum));
+}
+
+console.log(leftList);
+console.log("first part:", firstPart(leftList, rightList));
+console.log(leftList);
+console.log("second part:", secondPart(leftList, rightList));

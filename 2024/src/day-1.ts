@@ -1,3 +1,5 @@
+import { getLines } from "./get-lines";
+
 function firstPart(leftList: number[], rightList: number[]) {
   if (leftList.length !== rightList.length) {
     throw new Error("Impossible to pair up");
@@ -26,12 +28,6 @@ function secondPart(leftList: number[], rightList: number[]) {
   }
 
   return similarityScore;
-}
-
-async function getLines(path: string) {
-  const file = await Bun.file(path).text();
-
-  return file.split("\n");
 }
 
 const lines = await getLines("inputs/day-1.txt");
